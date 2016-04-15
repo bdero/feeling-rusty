@@ -1,0 +1,6 @@
+[package]
+name = "feeling-rusty"
+version = "0.1.0"
+authors = ["Brandon DeRosier <x@bdero.me>"]
+
+[dependencies]
