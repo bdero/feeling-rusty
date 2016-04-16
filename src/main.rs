@@ -1,12 +1,19 @@
 extern crate sdl2;
 
+macro_rules! str {
+    ($x: expr) => (String::from($x));
+}
+
 fn main() {
     let (code, reason) = feeling_rusty();
 
     if code != 0 {
         println!(
-            "An unrecoverable error was encountered: {:?}",
-            reason.unwrap()
+            "An unrecoverable error was encountered{:?}",
+            match reason {
+                Some(message) => format!(": {}", message),
+                None => str!("!")
+            }
         );
     }
     std::process::exit(code);
@@ -16,7 +23,7 @@ macro_rules! unrecoverable {
     ($error:expr) => {
         return (
             1,
-            Some(String::from($error))
+            Some(str!($error))
         )
     };
 }
@@ -30,7 +37,7 @@ macro_rules! essential {
         match $x {
             Ok(value) => value,
             Err(_) => {
-                unrecoverable!(String::from($error));
+                unrecoverable!(str!($error));
             }
         };
     };
