@@ -25,19 +25,30 @@ macro_rules! expected_exit {
     () => (return (0, None));
 }
 
-macro_rules! essential_unwrap {
-    ($x:expr) => {
+macro_rules! essential {
+    ($x:expr, $error:expr) => {
         match $x {
             Ok(value) => value,
-            Err(error) => {
-                unrecoverable!(error);
+            Err(_) => {
+                unrecoverable!(String::from($error));
             }
         };
     };
 }
 
 fn feeling_rusty() -> (i32, Option<String>) {
-    let mut sdl_context = essential_unwrap!(sdl2::init());
+    let sdl_context = essential!(sdl2::init(), "Couldn't initialize SDL context.");
+    let video_system = essential!(sdl_context.video(), "Couldn't initialize SDL subsystem.");
+
+    let window = essential!(
+        video_system.window("Feeling Rusty", 800, 600)
+            .position_centered()
+            .opengl()
+            .build(),
+        "Couldn't initialize SDL window."
+    );
+
+    let mut renderer = essential!(window.renderer().build(), "Couldn't initialize SDL renderer.");
 
     expected_exit!();
 }
