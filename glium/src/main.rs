@@ -1,9 +1,6 @@
 extern crate glium;
 
-use glium::glutin::MonitorId;
-
 struct Monitor {
-    total_pixels: u32,
     name: String,
     id: glium::glutin::MonitorId,
 }
@@ -13,7 +10,6 @@ impl Monitor {
         let dimensions = id.get_dimensions();
         let name = id.get_name().unwrap();
         Monitor {
-            total_pixels: dimensions.0*dimensions.1,
             id: id,
             name: format!("{} ({}x{})", name, dimensions.0, dimensions.1),
         }
@@ -26,7 +22,7 @@ impl Monitor {
 }
 
 fn main() {
-    use glium::DisplayBuild;
+    use glium::{DisplayBuild, Surface};
 
     println!("Detected Monitors:");
     let monitors: Vec<Monitor> = glium::glutin::get_available_monitors().map(|mon| {
@@ -43,4 +39,17 @@ fn main() {
         .with_dimensions(800, 600)
         .build_glium()
         .unwrap();
+
+    loop {
+        let mut target = display.draw();
+        target.clear_color(0.0, 0.0, 1.0, 1.0);
+        target.finish().unwrap();
+
+        for ev in display.poll_events() {
+            match ev {
+                glium::glutin::Event::Closed => return,
+                _ => (),
+            }
+        }
+    }
 }
