@@ -36,6 +36,7 @@ fn main() {
         println!("{}: {}", i, mon.name);
     }
     let largest_monitor = monitors.iter().max_by_key(|x| x.get_total_pixels()).unwrap();
+    println!("Largest monitor: {}", largest_monitor.id.get_name().unwrap());
 
     let display = glium::glutin::WindowBuilder::new()
         .with_title(String::from("Glium test"))
